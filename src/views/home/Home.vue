@@ -4,7 +4,7 @@
       <div slot="center">購物街</div>
     </nav-bar>
 
-    <scroll class="content" ref="scroll">
+    <scroll class="content" ref="scroll" :probe-type="3" @scroll="contentScroll">
       <home-swiper :banners="banners" />
       <recommend-view :recommends="recommends" />
       <feature-view></feature-view>
@@ -12,7 +12,7 @@
       <goods-list :goods="showGoods"></goods-list>
     </scroll>
 
-    <back-top @click.native="backClick"></back-top>
+    <back-top @click.native="backClick" v-show="isShowBackTop" />
   </div>
 </template>
 
@@ -51,7 +51,8 @@ export default {
         new: { page: 0, list: [] },
         sell: { page: 0, list: [] }
       },
-      currentType: "pop"
+      currentType: "pop",
+      isShowBackTop: false
     };
   },
   computed: {
@@ -89,6 +90,9 @@ export default {
       // this.$refs.srcoll.scroll.scrollTo(0 , 0)
       this.$refs.scroll.scrollTo(0, 0, 500)
       // console.log(this.$refs.scroll.scroll.scrollTo)
+    },
+    contentScroll(position) {
+      this.isShowBackTop = (-position.y) > 1000
     },
     /**
      * 網路請求相關的方法
