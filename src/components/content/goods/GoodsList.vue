@@ -20,7 +20,18 @@ export default {
         return []
       }
     }
-  }
+  },
+  watch: { //監聽數據掛載完畢才執行下拉加載更多
+    goods: function () {
+      this.$nextTick(() => {
+        // this.condition = true
+        this.$parent.$parent.condition = true
+        console.log(this.$parent.$parent.condition)
+        
+      });
+    },
+  },
+
 
 }
 </script>
