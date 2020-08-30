@@ -1,47 +1,48 @@
 <template>
   <div class="goods">
     <goods-list-item v-for="item in goods" :key="item.index" :goods-item="item"></goods-list-item>
-
   </div>
 </template>
 
 <script>
-import GoodsListItem from './GoodsListItem'
+import GoodsListItem from "./GoodsListItem";
 
 export default {
-  name: 'GoodsList',
+  name: "GoodsList",
   components: {
-    GoodsListItem
+    GoodsListItem,
   },
   props: {
     goods: {
       type: Array,
       default() {
-        return []
-      }
-    }
+        return [];
+      },
+    },
   },
-  watch: { //監聽數據掛載完畢才執行下拉加載更多
+  methods: {},
+  watch: {
+    //監聽數據掛載完畢才執行下拉加載更多
     goods: function () {
       this.$nextTick(() => {
-        // this.condition = true
-        this.$parent.$parent.condition = true
-        console.log(this.$parent.$parent.condition)
-        
+        // setTimeout(() => {
+        //   this.$parent.$parent.condition = true;
+        //   console.log(this.$parent.$parent.condition);
+        // },100);
+        this.$parent.$parent.condition = true;
+        console.log(this.$parent.$parent.condition);
       });
     },
   },
-
-
-}
+};
 </script>
 
 <style>
-  .goods{
-    display: flex;
-    flex-wrap: wrap;
-    width:100%;
-    justify-content: space-around;
-    padding: 2px;
-  }
+.goods {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-content: space-around;
+  padding: 2px;
+}
 </style>

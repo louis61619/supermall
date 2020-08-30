@@ -1,11 +1,11 @@
 <template>
-  <swiper ref="swiper">
-    <swiper-item v-for="item in banners" :key="item.index">
-      <a :href="item.link">
-        <img :src="item.image" alt />
-      </a>
-    </swiper-item>
-  </swiper>
+    <swiper ref="swiper">
+      <swiper-item v-for="(item, key) in banners" :key="key">
+        <a :href="item.link">
+          <img :src="item.image" @load="imageLoad" />
+        </a>
+      </swiper-item>
+    </swiper>
 </template>
 
 <script>
@@ -19,6 +19,11 @@ export default {
       },
     },
   },
+  data() {
+    return {
+      isLoad: false,
+    };
+  },
   components: {
     Swiper,
     SwiperItem,
@@ -26,11 +31,21 @@ export default {
   created() {
     // console.log(this)
   },
-  watch: { //數據渲染完畢時操作DOM
+  methods: {
+    imageLoad() {
+      //加載圖片
+      if (!this.isLoad) {
+        this.$emit("swiperImageLoad");
+        this.isLoad = true;
+      }
+    },
+  },
+  watch: {
+    //數據渲染完畢時操作DOM
     banners: function () {
       this.$nextTick(() => {
-        this.$refs.swiper.handleDom()
-        this.$refs.swiper.startTimer()
+        this.$refs.swiper.handleDom();
+        this.$refs.swiper.startTimer();
       });
     },
   },

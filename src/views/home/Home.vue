@@ -3,7 +3,15 @@
     <nav-bar class="home-nav">
       <div slot="center">購物街</div>
     </nav-bar>
+    <tab-control
+        :titles="['流行','新款','精選']"
+        class="tab-control-fixed"
+        ref="TabControlFixed"
+        @tabClick="tabClick"
+        v-show="isTabfixed"
+      ></tab-control>
 
+    <!-- 動態傳遞的數據的駝峰間必須以橫槓線分隔 -->
     <scroll
       class="content"
       ref="scroll"
@@ -12,10 +20,15 @@
       :pull-up-load="true"
       @pullingUp="loadMore"
     >
-      <home-swiper ref="swiper" :banners="banners" />
+      <home-swiper ref="swiper" :banners="banners" @swiperImageLoad="swiperImageLoad" />
       <recommend-view :recommends="recommends" />
       <feature-view></feature-view>
-      <tab-control :titles="['流行','新款','精選']" class="tab-control" @tabClick="tabClick"></tab-control>
+      <tab-control
+        :titles="['流行','新款','精選']"
+        class="tab-control"
+        ref="TabControl"
+        @tabClick="tabClick"
+      ></tab-control>
       <goods-list :goods="showGoods"></goods-list>
     </scroll>
     <!-- 加上修飾符native可以直接監聽點擊 -->
@@ -63,12 +76,23 @@ export default {
       currentType: "pop",
       isShowBackTop: false,
       condition: false,
+      tabOffsetTop: 0,
+      isTabfixed: false,
+      saveY: 0
     };
   },
   computed: {
     showGoods() {
       return this.goods[this.currentType].list;
     },
+  },
+  activated() { //還原之前離開時所記錄的頂部位置
+    this.$refs.scroll.refresh()
+    this.$refs.scroll.scrollTo(0, this.saveY, 0) 
+  },
+  deactivated() { //紀錄離開時距離頂部的位置
+    this.saveY = this.$refs.scroll.getScrollY()
+    console.log(this.saveY)
   },
   created() {
     //created是一個回調函數
@@ -111,6 +135,8 @@ export default {
           this.currentType = "sell";
           break;
       }
+      this.$refs.TabControlFixed.currentIndex = index
+      this.$refs.TabControl.currentIndex = index
     },
     backClick() {
       // this.$refs.srcoll.scroll.scrollTo(0 , 0)
@@ -118,26 +144,28 @@ export default {
       // console.log(this.$refs.scroll.scroll.scrollTo)
     },
     contentScroll(position) {
+      //1.判斷BackTop是否顯示
       this.isShowBackTop = -position.y > 1000;
+
+      //2.決定tabControl
+      this.isTabfixed = (-position.y) > (this.tabOffsetTop)
     },
     loadMore() {
-      let timer = null;
-
-      if (timer) clearTimeout(timer);
-      timer = setTimeout(() => {
-        if (this.condition === true) {
+      //下拉加載更多監聽圖片加載完畢 並使用防抖函數
+      if (this.condition === true) {
+        let timer = null;
+        if (timer) clearTimeout(timer);
+        timer = setTimeout(() => {
           this.getHomeGoods(this.currentType);
           this.condition = false;
           console.log(this.condition);
-        }
-      }, 1000);
-    },
-    loadMorefuc() {
-      if (this.condition === true) {
-        this.getHomeGoods(this.currentType);
-        this.condition = false;
-        console.log(this.condition);
+        }, 2000);
       }
+    },
+    swiperImageLoad() {
+      //監聽tabcontrol對頂部的距離
+      //所有組件都有一個$el，用於獲取組件中的元素
+      this.tabOffsetTop = this.$refs.TabControl.$el.offsetTop
     },
     /**
      * 網路請求相關的方法
@@ -171,7 +199,7 @@ body {
   width: 100%;
 }
 #home {
-  padding-top: 44px;
+  /* padding-top: 44px; */
   height: 100vh;
   width: 100%;
 }
@@ -179,20 +207,27 @@ body {
   background-color: var(--color-tint);
   color: #fff;
 
-  position: fixed;
+  /* position: fixed;
   left: 0;
   top: 0;
   width: 100%;
-  z-index: 9;
+  z-index: 9; */
 }
 .tab-control {
-  position: sticky;
-  top: 44px;
+  background: #fff;
+  z-index: 2;
+}
+.tab-control-fixed {
+  position: fixed;
   background: #fff;
   z-index: 2;
 }
 .content {
-  height: calc(100% - 49px);
+  /* height: calc(100% - 49px); */
   overflow: hidden;
+  position: absolute;
+  top: 44px;
+  bottom: 49px;
+  left: 0;
 }
 </style>
