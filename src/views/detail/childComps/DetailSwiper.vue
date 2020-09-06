@@ -29,7 +29,7 @@ export default {
     //數據渲染完畢時操作DOM
     topImages: function () {
       this.$nextTick(() => {
-        console.log(this.topImages)
+        // console.log(this.topImages)
         this.$refs.swipers.handleDom();
         this.$refs.swipers.startTimer();
       });
