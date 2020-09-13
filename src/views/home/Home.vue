@@ -45,11 +45,11 @@ import NavBar from "components/common/navbar/NavBar";
 import TabControl from "components/content/tabControl/TabControl";
 import GoodsList from "components/content/goods/GoodsList";
 import Scroll from "components/common/scroll/Scroll";
-import BackTop from "components/content/backTop/BackTop";
 
 import { getHomeMultidata, getHomeGoods } from "network/home";
 
 import { debounce } from "common/utile";
+import { itemListenerMixin, backTopMixin } from "common/mixin";
 
 export default {
   name: "Home",
@@ -61,8 +61,8 @@ export default {
     TabControl,
     GoodsList,
     Scroll,
-    BackTop,
   },
+  mixins: [itemListenerMixin, backTopMixin],
   data() {
     return {
       // result: null,
@@ -74,11 +74,10 @@ export default {
         sell: { page: 0, list: [] },
       },
       currentType: "pop",
-      isShowBackTop: false,
       condition: false,
       tabOffsetTop: 0,
       isTabfixed: false,
-      saveY: 0
+      saveY: 0,
     };
   },
   computed: {
@@ -93,6 +92,7 @@ export default {
   deactivated() { //紀錄離開時距離頂部的位置
     this.saveY = this.$refs.scroll.getScrollY()
     console.log(this.saveY)
+    this.$bus.$off('itemImageLoad',this.itemImgListener)
   },
   created() {
     //created是一個回調函數
@@ -110,14 +110,16 @@ export default {
     // })
   },
   mounted() {
-    //監聽item中圖片加載完成
-    const refresh = debounce(
-      this.$refs.scroll && this.$refs.scroll.refresh,
-      50
-    );
-    this.$bus.$on("itemImageLoad", () => {
-      refresh();
-    });
+    // //監聽item中圖片加載完成
+    // const refresh = debounce(
+    //   this.$refs.scroll && this.$refs.scroll.refresh,
+    //   50
+    // );
+    // this.$bus.$on("itemImageLoad", () => { //從goodListItem中傳出來的事件
+    //   refresh();
+    // });
+
+    //使用混入
   },
   methods: {
     /**
@@ -138,14 +140,10 @@ export default {
       this.$refs.TabControlFixed.currentIndex = index
       this.$refs.TabControl.currentIndex = index
     },
-    backClick() {
-      // this.$refs.srcoll.scroll.scrollTo(0 , 0)
-      this.$refs.scroll.scrollTo(0, 0, 500);
-      // console.log(this.$refs.scroll.scroll.scrollTo)
-    },
     contentScroll(position) {
       //1.判斷BackTop是否顯示
-      this.isShowBackTop = -position.y > 1000;
+      // this.isShowBackTop = -position.y > 1000;
+      this.listenShowBackTop(position)
 
       //2.決定tabControl
       this.isTabfixed = (-position.y) > (this.tabOffsetTop)

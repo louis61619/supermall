@@ -24,6 +24,7 @@ export default {
         return [];
       },
     },
+    ABC: String
   },
   watch: {
     //數據渲染完畢時操作DOM

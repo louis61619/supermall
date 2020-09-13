@@ -1,6 +1,6 @@
 <template>
   <div class="goods-item" @click="itemClick">
-    <img :src="goodsItem.show.img" alt @load="imageLoad" />
+    <img :src="showImage" alt @load="imageLoad" />
     <div class="goods-info">
       <p>{{goodsItem.title}}</p>
       <span class="price">{{goodsItem.price}}</span>
@@ -19,6 +19,11 @@ export default {
         return {};
       },
     },
+  },
+  computed:{
+    showImage() { //判斷前一個有沒有值，沒有便返回下一個
+      return this.goodsItem.image || this.goodsItem.show.img
+    }
   },
   methods: {
     imageLoad() {
