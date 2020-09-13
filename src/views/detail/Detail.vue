@@ -215,7 +215,9 @@ export default {
       // console.log(product)
 
       //2.將商品添加到購物車
-      this.$store.commit('addCart', product)
+      // this.$store.commit('addCart', product)
+      //透過action進行調用
+      this.$store.dispatch('addCart', product)
     }
   },
   mounted() {},
