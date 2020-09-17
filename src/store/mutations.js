@@ -8,6 +8,6 @@ export default {
     payload.count++
   },
   [ADD_TO_CART](state, payload) {
-    state.cardList.push(payload)
+    state.cartList.push(payload)
   }
 }

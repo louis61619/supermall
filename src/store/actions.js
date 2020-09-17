@@ -6,7 +6,7 @@ import {
 export default {
   addCart(context, payload) {
     //1.查找之前的陣列中是否有該商品
-    let oldProduct = context.state.cardList.find(item => item.iid === payload.iid)
+    let oldProduct = context.state.cartList.find(item => item.iid === payload.iid)
 
     //2.判斷oldProduct
     if (oldProduct) { //判斷oldProduct有內容，便將內容的count屬性+1
