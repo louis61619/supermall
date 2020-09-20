@@ -8,18 +8,28 @@
 </template>
 
 <script>
-import MainTabBar from 'components/content/MainTabBar/MainTabBar'
-import Axios from 'axios'
+import MainTabBar from "components/content/MainTabBar/MainTabBar";
+import Axios from "axios";
 
 export default {
-  name: 'App',
- components: {
-    MainTabBar
-
+  name: "App",
+  components: {
+    MainTabBar,
   },
-}
+  // created() {
+  //   document.addEventListener(
+  //     "touchmove",
+  //     function (event) {
+  //       event.preventDefault();
+  //     },
+  //     {
+  //       passive: false,
+  //     }
+  //   );
+  // },
+};
 </script>
 
 <style>
-  @import "assets/css/base.css";
+@import "assets/css/base.css";
 </style>

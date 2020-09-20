@@ -20,7 +20,7 @@
       :pull-up-load="true"
       @pullingUp="loadMore"
     >
-      <home-swiper ref="swiper" :banners="banners" @swiperImageLoad="swiperImageLoad" />
+      <home-swiper ref="swiper" :banners="banners" />
       <recommend-view :recommends="recommends" />
       <feature-view></feature-view>
       <tab-control
@@ -78,6 +78,7 @@ export default {
       tabOffsetTop: 0,
       isTabfixed: false,
       saveY: 0,
+      imageLoad: 0
     };
   },
   computed: {
@@ -146,7 +147,10 @@ export default {
       this.listenShowBackTop(position)
 
       //2.決定tabControl
-      this.isTabfixed = (-position.y) > (this.tabOffsetTop)
+      if(this.imageLoad === 3) {
+        this.tabOffsetTop = this.$refs.TabControl.$el.offsetTop
+        this.isTabfixed = (-position.y) > (this.tabOffsetTop)
+      }
     },
     loadMore() {
       //下拉加載更多監聽圖片加載完畢 並使用防抖函數
@@ -160,11 +164,17 @@ export default {
         }, 2000);
       }
     },
-    swiperImageLoad() {
-      //監聽tabcontrol對頂部的距離
-      //所有組件都有一個$el，用於獲取組件中的元素
-      this.tabOffsetTop = this.$refs.TabControl.$el.offsetTop
-    },
+    // swiperImageLoad() {
+    //   //監聽tabcontrol對頂部的距離
+    //   //所有組件都有一個$el，用於獲取組件中的元素
+    //   if(this.imageLoad === 2){
+        
+    //     this.tabOffsetTop = this.$refs.TabControl.$el.offsetTop
+    //     this.imageLoad = this.imageLoad + 1
+    //   }
+        
+    // },
+
     /**
      * 網路請求相關的方法
      */

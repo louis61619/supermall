@@ -49,12 +49,12 @@ export default {
   },
   mounted: function () {
     // 1.操作DOM, 在前后添加Slide
-    setTimeout(() => {
-      this.handleDom();
+    // setTimeout(() => {
+    //   this.handleDom();
 
-      // 2.开启定时器
-      this.startTimer();
-    }, 300);
+    //   // 2.开启定时器
+    //   this.startTimer();
+    // }, 300);
     
   },
   methods: {

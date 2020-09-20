@@ -25,10 +25,6 @@ export default {
     //監聽數據掛載完畢才執行下拉加載更多
     goods: function () {
       this.$nextTick(() => {
-        // setTimeout(() => {
-        //   this.$parent.$parent.condition = true;
-        //   console.log(this.$parent.$parent.condition);
-        // },100);
         this.$parent.$parent.condition = true;
         console.log(this.$parent.$parent.condition);
       });

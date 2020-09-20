@@ -3,7 +3,7 @@
     <div v-for="item in recommends" :key="item.index" class="recommend-item">
       <!-- <a :href="item.link" class="recommend-link"> -->
       <div class="recommend-link">
-        <img class="recommend-img" :src="item.image" alt />
+        <img class="recommend-img" :src="item.image" alt @load="imageLoad"/>
         <div>{{item.title}}</div>
       </div>
       <!-- </a> -->
@@ -20,6 +20,21 @@ export default {
       default() {
         return [];
       },
+    },
+  },
+  data() {
+    return {
+      isLoad: false
+    }
+  },
+  methods: {
+    imageLoad() {
+      //加載圖片
+      if (!this.isLoad) {
+        console.log(this.$parent.$parent.imageLoad)
+        this.$parent.$parent.imageLoad =  this.$parent.$parent.imageLoad + 1
+        this.isLoad = true;
+      }
     },
   },
 };

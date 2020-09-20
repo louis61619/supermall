@@ -32,6 +32,7 @@ export default {
     //1.創建Bscoll對象
     this.scroll = new BScroll(this.$refs.wrapper, {
       click: true,
+      useTransition:false,
       probeType: this.probeType,
       pullUpLoad: this.pullUpLoad,
     });

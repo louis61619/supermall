@@ -33,11 +33,12 @@ export default {
 
 <style scoped>
 .cart{
-  height: calc(100vh - 44px - 49px);
+  height: calc(100vh - 44px - 49px - 40px);
 }
 .content{
   height: 100%;
   overflow: hidden;
+  /* padding-bottom: 40px; */
 }
 
 </style>

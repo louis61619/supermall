@@ -1,7 +1,8 @@
 <template>
   <div id="shop-item">
     <div class="item-selector">
-      <check-button></check-button>
+      <!-- 修改物件模型來決定選中與不選中 -->
+      <check-button :is-checked="itemInfo.checked" @click.native="checkClick"></check-button>
     </div>
     <div class="item-img">
       <img :src="itemInfo.image" alt="商品圖片" />
@@ -10,7 +11,7 @@
       <div class="item-title">{{itemInfo.title}}</div>
       <div class="item-desc">商品描述: {{itemInfo.desc}}</div>
       <div class="info-bottom">
-        <div class="item-price left">¥{{itemInfo.newPrice}}</div>
+        <div class="item-price left">¥{{itemInfo.price}}</div>
         <div class="item-count right">x{{itemInfo.count}}</div>
       </div>
     </div>
@@ -28,7 +29,11 @@ export default {
   components: {
     CheckButton,
   },
-  methods: {},
+  methods: {
+    checkClick() {
+      this.itemInfo.checked = !this.itemInfo.checked
+    }
+  },
 };
 </script>
 
@@ -65,6 +70,7 @@ export default {
   height: 100px;
   display: block;
   border-radius: 5px;
+  object-fit: cover;
 }
 
 .item-info {

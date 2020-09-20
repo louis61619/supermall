@@ -15,7 +15,8 @@
       <good-list ref="recommend" :goods="recommends"></good-list>
     </scroll>
     <back-top @click.native="backClick" v-show="isShowBackTop" />
-    <detail-bottom-bar @addToCart="addCart"></detail-bottom-bar>
+    <detail-bottom-bar @addToCart="addToCart"></detail-bottom-bar>
+    <!-- <toast :message="message" :show="show"></toast> -->
   </div>
 </template>
 
@@ -31,7 +32,8 @@ import DetailBottomBar from "./childComps/DetailBottomBar";
 
 import Scroll from "components/common/scroll/Scroll";
 import GoodList from "components/content/goods/GoodsList";
-import BackTop from "components/content/backTop/BackTop"
+// import Toast from "components/common/toast/Toast"
+
 
 import {
   getDetail,
@@ -42,6 +44,8 @@ import {
 } from "network/detail";
 import { itemListenerMixin, backTopMixin } from "common/mixin";
 import { debounce } from "common/utile";
+
+import { mapActions } from "vuex"
 
 export default {
   name: "Detail",
@@ -56,7 +60,7 @@ export default {
     DetailBottomBar,
     Scroll,
     GoodList,
-    BackTop
+    // Toast
   },
   mixins: [itemListenerMixin, backTopMixin],
   data() {
@@ -72,6 +76,9 @@ export default {
       themeTopYs: [],
       getThemeTopY: null,
       currentIndex: 0,
+      // message: '',
+      // show: false,
+      condition: false
     };
   },
   created() {
@@ -147,6 +154,10 @@ export default {
     });
   },
   methods: {
+    ...mapActions(['addCart']),
+    // ...mapActions({
+    //   add: 'addCart'
+    // }),
     imageLoad() {
       //偵測圖片加載完畢
       this.$refs.scroll.refresh();
@@ -202,9 +213,9 @@ export default {
         }
       }
     },
-    addCart() {
-
-      //1.獲取購物車需要展示的信息
+    addToCart() {
+      if(this.topImages[0] && this.goods.title && this.goods.desc && this.goods.realPrice &&  this.iid) {
+        //1.獲取購物車需要展示的信息
       console.log('加入購物車')
       const product = {}
       product.image = this.topImages[0]
@@ -216,11 +227,29 @@ export default {
 
       //2.將商品添加到購物車
       // this.$store.commit('addCart', product)
-      //透過action進行調用
-      this.$store.dispatch('addCart', product)
+      //透過action進行promise調用
+      this.addCart(product).then((res) => {
+        // console.log(res)
+        // this.show = true
+        // this.message = res
+        // setTimeout(() => {
+        //   this.show = false,
+        //   this.message = ""
+        // }, 1000)
+        this.$toast.show(res, 1500)
+        
+      })
+
+      // this.$store.dispatch('addCart', product).then(res => {
+      //   console.log(res)
+      // })
+      }
+      
     }
   },
   mounted() {},
+  watch: {
+  },
   updated() {
     //當渲染的畫面有變化時便會反映
     //實際結果仍有差距，可能是在圖片沒有加載完畢前仍然會傳入值

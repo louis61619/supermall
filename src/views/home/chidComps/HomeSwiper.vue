@@ -35,7 +35,9 @@ export default {
     imageLoad() {
       //加載圖片
       if (!this.isLoad) {
-        this.$emit("swiperImageLoad");
+        // this.$emit("swiperImageLoad");
+        console.log(this.$parent.$parent.imageLoad)
+        this.$parent.$parent.imageLoad =  this.$parent.$parent.imageLoad + 1
         this.isLoad = true;
       }
     },
