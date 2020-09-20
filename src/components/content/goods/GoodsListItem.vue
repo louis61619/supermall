@@ -22,7 +22,7 @@ export default {
   },
   computed:{
     showImage() { //判斷前一個有沒有值，沒有便返回下一個
-      return this.goodsItem.image || this.goodsItem.show.img
+      return this.goodsItem.img ||  this.goodsItem.image || this.goodsItem.show.img 
     }
   },
   methods: {

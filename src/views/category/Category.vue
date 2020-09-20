@@ -1,143 +1,143 @@
 <template>
-  <div class="wrapper">
-    <ul class="content">
-      <li>分類列表1</li>
-      <li>分類列表2</li>
-      <li>分類列表3</li>
-      <li>分類列表4</li>
-      <li>分類列表5</li>
-      <li>分類列表6</li>
-      <li>分類列表7</li>
-      <li>分類列表8</li>
-      <li>分類列表9</li>
-      <li>分類列表10</li>
-      <li>分類列表11</li>
-      <li>分類列表12</li>
-      <li>分類列表13</li>
-      <li>分類列表14</li>
-      <li>分類列表15</li>
-      <li>分類列表16</li>
-      <li>分類列表17</li>
-      <li>分類列表18</li>
-      <li>分類列表19</li>
-      <li>分類列表20</li>
-      <li>分類列表21</li>
-      <li>分類列表22</li>
-      <li>分類列表23</li>
-      <li>分類列表24</li>
-      <li>分類列表25</li>
-      <li>分類列表26</li>
-      <li>分類列表27</li>
-      <li>分類列表28</li>
-      <li>分類列表29</li>
-      <li>分類列表30</li>
-      <li>分類列表31</li>
-      <li>分類列表32</li>
-      <li>分類列表33</li>
-      <li>分類列表34</li>
-      <li>分類列表35</li>
-      <li>分類列表36</li>
-      <li>分類列表37</li>
-      <li>分類列表38</li>
-      <li>分類列表39</li>
-      <li>分類列表40</li>
-      <li>分類列表41</li>
-      <li>分類列表42</li>
-      <li>分類列表43</li>
-      <li>分類列表44</li>
-      <li>分類列表45</li>
-      <li>分類列表46</li>
-      <li>分類列表47</li>
-      <li>分類列表48</li>
-      <li>分類列表49</li>
-      <li>分類列表50</li>
-      <li>分類列表51</li>
-      <li>分類列表52</li>
-      <li>分類列表53</li>
-      <li>分類列表54</li>
-      <li>分類列表55</li>
-      <li>分類列表56</li>
-      <li>分類列表57</li>
-      <li>分類列表58</li>
-      <li>分類列表59</li>
-      <li>分類列表60</li>
-      <li>分類列表61</li>
-      <li>分類列表62</li>
-      <li>分類列表63</li>
-      <li>分類列表64</li>
-      <li>分類列表65</li>
-      <li>分類列表66</li>
-      <li>分類列表67</li>
-      <li>分類列表68</li>
-      <li>分類列表69</li>
-      <li>分類列表70</li>
-      <li>分類列表71</li>
-      <li>分類列表72</li>
-      <li>分類列表73</li>
-      <li>分類列表74</li>
-      <li>分類列表75</li>
-      <li>分類列表76</li>
-      <li>分類列表77</li>
-      <li>分類列表78</li>
-      <li>分類列表79</li>
-      <li>分類列表80</li>
-      <li>分類列表81</li>
-      <li>分類列表82</li>
-      <li>分類列表83</li>
-      <li>分類列表84</li>
-      <li>分類列表85</li>
-      <li>分類列表86</li>
-      <li>分類列表87</li>
-      <li>分類列表88</li>
-      <li>分類列表89</li>
-      <li>分類列表90</li>
-      <li>分類列表91</li>
-      <li>分類列表92</li>
-      <li>分類列表93</li>
-      <li>分類列表94</li>
-      <li>分類列表95</li>
-      <li>分類列表96</li>
-      <li>分類列表97</li>
-      <li>分類列表98</li>
-      <li>分類列表99</li>
-      <li>分類列表100</li>
-    </ul>
+  <div id="category">
+    <nav-bar class="nav-bar"><div slot="center">商品分類</div></nav-bar>
+    <div class="content">
+      <tab-menu :categories="categories"
+                @selectItem="selectItem"></tab-menu>
+
+      <scroll id="tab-content" :data="[categoryData]">
+        <div>
+          <tab-content-category :subcategories="showSubcategory"></tab-content-category>
+          <tab-control :titles="['综合', '新品', '销量']"
+                       @itemClick="tabClick"></tab-control>
+          <tab-content-detail :category-detail="showCategoryDetail"></tab-content-detail>
+        </div>
+      </scroll>
+    </div>
   </div>
-  
 </template>
 
 <script>
-import BScroll from 'better-scroll'
+  import NavBar from 'components/common/navbar/NavBar'
 
-export default {
-  name: "Category",
-  data() {
-    return {
-      scroll: null
+  import TabMenu from './childComps/TabMenu'
+  import TabControl from 'components/content/tabControl/TabControl'
+  import Scroll from 'components/common/scroll/Scroll'
+  import TabContentCategory from './childComps/TabContentCategory'
+  import TabContentDetail from './childComps/TabContentDetail'
+
+  import {getCategory, getSubcategory, getCategoryDetail} from "network/category";
+  import {POP, SELL, NEW} from "@/common/const";
+  import {tabControlMixin} from "@/common/mixin";
+
+  export default {
+		name: "Category",
+    components: {
+		  NavBar,
+      TabMenu,
+      TabControl,
+      Scroll,
+      TabContentCategory,
+      TabContentDetail
+    },
+    mixins: [tabControlMixin],
+    data() {
+		  return {
+		    categories: [],
+        categoryData: {
+        },
+        currentIndex: -1
+      }
+    },
+    created() {
+		  // 1.请求分类数据
+      this._getCategory()
+    },
+    computed: {
+		  showSubcategory() {
+		    if (this.currentIndex === -1) return {}
+        return this.categoryData[this.currentIndex].subcategories
+      },
+      showCategoryDetail() {
+		    if (this.currentIndex === -1) return []
+		    return this.categoryData[this.currentIndex].categoryDetail[this.currentType]
+      }
+    },
+    methods: {
+		  _getCategory() {
+		    getCategory().then(res => {
+		      // 1.获取分类数据
+		      this.categories = res.data.category.list
+          // 2.初始化每个类别的子数据
+          for (let i = 0; i < this.categories.length; i++) {
+            this.categoryData[i] = {
+              subcategories: {},
+              categoryDetail: {
+                'pop': [],
+                'new': [],
+                'sell': []
+              }
+            }
+          }
+          // 3.请求第一个分类的数据
+          this._getSubcategories(0)
+        })
+      },
+      _getSubcategories(index) {
+        this.currentIndex = index;
+		    const mailKey = this.categories[index].maitKey;
+        getSubcategory(mailKey).then(res => {
+          this.categoryData[index].subcategories = res.data
+          this.categoryData = {...this.categoryData}
+          this._getCategoryDetail(POP)
+          this._getCategoryDetail(SELL)
+          this._getCategoryDetail(NEW)
+        })
+      },
+      _getCategoryDetail(type) {
+		    // 1.获取请求的miniWallkey
+        const miniWallkey = this.categories[this.currentIndex].miniWallkey;
+        // 2.发送请求,传入miniWallkey和type
+		    getCategoryDetail(miniWallkey, type).then(res => {
+		      // 3.将获取的数据保存下来
+		      this.categoryData[this.currentIndex].categoryDetail[type] = res
+          this.categoryData = {...this.categoryData}
+        })
+      },
+      /**
+       * 事件响应相关的方法
+       */
+      selectItem(index) {
+        this._getSubcategories(index)
+      }
     }
-  },
-  mounted() {
-    let wrapper = document.querySelector('.wrapper')
-    this.scroll = new BScroll(wrapper, {
-      probeType: 3,
-      pullUpLoad: true
-    })
-    this.scroll.on('scroll', (position) => {
-      console.log(position)
-    })
-    this.scroll.on('pullingUp', () => {
-      console.log('加載更多')
-    })
-  },
-}
+	}
 </script>
 
-<style lang="scss" scoped>
-  .wrapper{
-    height: 300px;
-    background: chartreuse;
+<style scoped>
+  #category {
+    height: 100vh;
+  }
 
-    // overflow: hidden;
-    // overflow-y: scroll;
+  .nav-bar {
+    background-color: var(--color-tint);
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .content {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 44px;
+    bottom: 49px;
+
+    display: flex;
+  }
+
+  #tab-content {
+    height: 100%;
+    flex: 1;
+    overflow: hidden;
   }
 </style>
